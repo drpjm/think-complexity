@@ -1,2 +1,0 @@
-(ns think-complexity.core)
-
