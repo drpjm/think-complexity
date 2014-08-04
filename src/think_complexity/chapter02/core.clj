@@ -1,4 +1,5 @@
-(ns think-complexity.chapter02.core)
+(ns think-complexity.chapter02.core
+  (:require [clojure.set :as s]))
 
 ; A graph can be represented as a map of maps data structure:
 ; vs - set of vertices, which are labels
@@ -21,6 +22,11 @@
     true
     false))
 
+(defn has-vertex? [graph v]
+  (if (contains? (:V graph) v)
+    true
+    false))
+
 (defn get-edge [graph v1 v2]
   "This function returns the edge that connects v1 and v2, or nil
   if it does not exist."
@@ -29,7 +35,42 @@
     nil))
 
 (defn remove-edge [graph v1 v2]
+  "Removes an edge from the supplied graph."
   (if (has-edge? graph v1 v2)
     (assoc graph :E (disj (:E graph) #{v1 v2}))
     graph))
+
+(defn vertices [graph]
+  "Convenience function for extracting the graph's vertices."
+  (:V graph))
+
+(defn edges [graph]
+  "Convenience function for extracting the graph's edges."
+  (:E graph))
+
+(defn out-edges [graph v]
+  "Returns a list of edges attached to vertex v."
+  (filter (fn [e] (if (contains? e v)
+                    true
+                    false))
+          (:E graph)))
+
+(defn out-vertices [graph v]
+  "Returns a list of vertices that are adjacent to v."
+  (let [es (out-edges graph v)]
+    (map first (map (fn [e] (s/difference e #{v}))
+         es))))
+
+(defn build-edges [vs]
+  (if (empty? vs)
+    `()
+    (cons (build-edges ))))
+
+(defn add-all-edges [graph]
+  "Creates a complete graph over all vertices."
+  (assoc graph
+    :E
+    (into #{} (build-edges (:V graph)))))
+
+(def empty-graph (create-simple-graph [:v1 :v2 :v3] #{}))
 
