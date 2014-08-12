@@ -62,15 +62,18 @@
          es))))
 
 (defn edge-set [v vs]
-  (map (fn [x] #{v x}) vs))
+  (set (map (fn [x] #{v x}) vs)))
+
+(defn build-all-edges [graph]
+  (loop [curr-es #{} curr-vs (vertices graph)]
+    (if (empty? curr-vs)
+      curr-es
+      (recur (s/union curr-es (edge-set (first curr-vs) (rest curr-vs))) (rest curr-vs)))
+    ))
 
 (defn add-all-edges [graph]
   "Creates a complete graph over all vertices."
-  ;(assoc graph
-  ;  :E
-  ;  )
-  )
-
-(def empty-graph (create-simple-graph [:v1 :v2 :v3] #{}))
-
-;(edge-set :v1 #{:v2 :v3})
+  (let [new-edges (build-all-edges graph)]
+    (assoc graph
+      :E
+      new-edges)))
