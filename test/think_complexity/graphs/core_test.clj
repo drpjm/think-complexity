@@ -1,4 +1,4 @@
-(ns think-complexity.chapter02.core-test
+(ns think-complexity.graphs.core-test
   (:require [think-complexity.chapter02.core :refer :all]))
 
 (def test-graph

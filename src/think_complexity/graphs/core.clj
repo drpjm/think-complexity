@@ -1,4 +1,4 @@
-(ns think-complexity.chapter02.core
+(ns think-complexity.graphs.core
   (:require [clojure.set :as s]))
 
 ; A graph can be represented as a map of maps data structure:
