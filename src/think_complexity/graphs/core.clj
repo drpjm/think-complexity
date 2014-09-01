@@ -92,11 +92,13 @@
              (dec curr-deg)
              (conj result-es #{v-to-connect (first curr-vs)})))))
 
-(connect-v-with-degree #{:v1 :v2 :v3 :v4 :v6} :v1 4)
-
 (defn add-regular-edges [graph degree]
   "Takes an edgeless graph and generates a new graph such that each
   vertex has the supplied degree."
   (if (>= degree (count (vertices graph)))
     (println "Error: not enough vertices for required degree.")
-    (println "Add edges, etc...")))
+    (let [result-es (map
+                     (fn [v] (connect-v-with-degree (vertices graph) v degree))
+                     (vertices graph))
+          regular-es (reduce s/union result-es)]
+      (assoc graph :E regular-es))))
