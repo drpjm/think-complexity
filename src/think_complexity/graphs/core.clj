@@ -65,6 +65,9 @@
     (map first (map (fn [e] (s/difference e #{v}))
          es))))
 
+(defn degree-of-v [graph v]
+  (count (out-vertices graph v)))
+
 (defn- edge-set [v vs]
   (set (map (fn [x] #{v x}) vs)))
 
@@ -102,3 +105,8 @@
                      (vertices graph))
           regular-es (reduce s/union result-es)]
       (assoc graph :E regular-es))))
+
+(def test-graph2
+  (create-simple-graph  [:v1 :v2 :v3 :v4] []))
+
+(def reg-test-graph2 (add-regular-edges test-graph2 1))

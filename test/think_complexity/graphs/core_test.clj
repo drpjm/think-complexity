@@ -1,11 +1,16 @@
 (ns think-complexity.graphs.core-test
   (:require [think-complexity.graphs.core :refer :all]))
 
-(def test-graph
+(def test-graph1
   (create-simple-graph  [:v1 :v2 :v3] [#{:v1 :v2} #{:v2 :v3} #{:v1 :v3}]))
 
-(map edge-as-string (:E test-graph))
+(def test-graph2
+  (create-simple-graph  [:v1 :v2 :v3 :v4] []))
 
-(out-vertices test-graph :v1)
+(def reg-test-graph2 (add-regular-edges test-graph2 1))
 
-(out-edges test-graph :v2)
+(map edge-as-string (:E test-graph1))
+
+(out-vertices test-graph1 :v1)
+
+(out-edges test-graph1 :v2)
