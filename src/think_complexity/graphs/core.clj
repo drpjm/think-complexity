@@ -85,28 +85,20 @@
       :E
       new-edges)))
 
-(defn connect-v-with-degree [vs v-to-connect degree]
-  (loop [curr-vs (disj vs v-to-connect)
-         curr-deg degree
-         result-es #{}]
-    (if (= curr-deg 1)
-        (conj result-es #{v-to-connect (first curr-vs)})
-        (recur (disj curr-vs (first curr-vs))
-             (dec curr-deg)
-             (conj result-es #{v-to-connect (first curr-vs)})))))
-
 (defn add-regular-edges [graph degree]
   "Takes an edgeless graph and generates a new graph such that each
   vertex has the supplied degree."
   (if (>= degree (count (vertices graph)))
     (println "Error: not enough vertices for required degree.")
-    (let [result-es (map
-                     (fn [v] (connect-v-with-degree (vertices graph) v degree))
-                     (vertices graph))
-          regular-es (reduce s/union result-es)]
-      (assoc graph :E regular-es))))
+    (loop [v (first (vertices graph))
+           curr-graph graph]
+      )))
+
+(def t (map (fn [dest] #{:v1 dest}) [:v3 :v2]))
 
 (def test-graph2
   (create-simple-graph  [:v1 :v2 :v3 :v4] []))
 
-(def reg-test-graph2 (add-regular-edges test-graph2 1))
+(degree-of-v test-graph2 :v1)
+
+;(def reg-test-graph2 (add-regular-edges test-graph2 1))
