@@ -90,15 +90,17 @@
   vertex has the supplied degree."
   (if (>= degree (count (vertices graph)))
     (println "Error: not enough vertices for required degree.")
-    (loop [v (first (vertices graph))
-           curr-graph graph]
-      )))
+    (if (odd? degree)
+      (if (odd? (count (vertices graph)))
+        (println "Error: cannot have an odd number of vertices with odd degree.")
+        (println "Generate regular graph with " (count (vertices graph)) " vertices and degree = " degree ".")
+        )
+      (do ; even degree!
+        (println "Generate regular graph.")))))
 
 (def t (map (fn [dest] #{:v1 dest}) [:v3 :v2]))
 
 (def test-graph2
-  (create-simple-graph  [:v1 :v2 :v3 :v4] []))
+  (create-simple-graph  [:v1 :v2 :v3] []))
 
-(degree-of-v test-graph2 :v1)
-
-;(def reg-test-graph2 (add-regular-edges test-graph2 1))
+(def reg-test-graph2 (add-regular-edges test-graph2 2))
