@@ -14,9 +14,9 @@
   "Returns a graph with the vertex v added."
   (assoc graph :V (conj (:V graph) v)))
 
-(defn add-edge [graph e]
+(defn add-edge [graph v1 v2]
   "Returns a graph with the edge e added."
-  (assoc graph :E (conj (:E graph) e)))
+  (assoc graph :E (conj (:E graph) #{v1 v2})))
 
 (defn edge-as-string [e]
   (str (first e) " -> " (last e)))
@@ -85,22 +85,28 @@
       :E
       new-edges)))
 
+(defn connect-v-with-degree [vs v degree]
+  (loop [ws (disj vs v)
+         es #{}]
+    (if (= (count (filter (fn [e] (contains? e v)) es)) degree)
+      es
+      (recur (disj ws (first ws)) (conj es #{v (first ws)})))))
+
+(connect-v-with-degree #{:v1 :v2 :v3} :v1 2)
+
 (defn add-regular-edges [graph degree]
   "Takes an edgeless graph and generates a new graph such that each
   vertex has the supplied degree."
   (if (>= degree (count (vertices graph)))
     (println "Error: not enough vertices for required degree.")
-    (if (odd? degree)
-      (if (odd? (count (vertices graph)))
-        (println "Error: cannot have an odd number of vertices with odd degree.")
-        (println "Generate regular graph with " (count (vertices graph)) " vertices and degree = " degree ".")
-        )
-      (do ; even degree!
-        (println "Generate regular graph.")))))
+    (if (and (odd? degree) (count (vertices graph)))
+      (println "Error: cannot have an odd number of vertices with odd degree.")
+      (println "Generate regular graph!")
+      )))
 
 (def t (map (fn [dest] #{:v1 dest}) [:v3 :v2]))
 
 (def test-graph2
   (create-simple-graph  [:v1 :v2 :v3] []))
 
-(def reg-test-graph2 (add-regular-edges test-graph2 2))
+;(def reg-test-graph2 (add-regular-edges test-graph2 2))
