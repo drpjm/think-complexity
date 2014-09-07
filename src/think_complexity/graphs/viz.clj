@@ -22,4 +22,9 @@
     :node->descriptor (fn [n] {:label n})
     :edge->descriptor (fn [s d] {:arrowhead "none"})))
 
-(view-graph g)
+(def test-graph2
+  (my-g/create-simple-graph  [:v1 :v2 :v3 :v4] []))
+
+;(def reg-test-graph2 (my-g/add-regular-edges test-graph2 1))
+
+;(view-graph reg-test-graph2)
