@@ -71,28 +71,24 @@
 (defn- edge-set [v vs]
   (set (map (fn [x] #{v x}) vs)))
 
-(defn build-all-edges [graph]
-  (loop [curr-es #{} curr-vs (vertices graph)]
-    (if (empty? curr-vs)
-      curr-es
-      (recur (s/union curr-es (edge-set (first curr-vs) (rest curr-vs))) (rest curr-vs)))
-    ))
-
 (defn add-all-edges [graph]
   "Creates a complete graph over all vertices."
-  (let [new-edges (build-all-edges graph)]
-    (assoc graph
-      :E
-      new-edges)))
+  (let [new-edges
+        (loop [curr-es #{} curr-vs (vertices graph)]
+          (if (empty? curr-vs)
+            curr-es
+            (recur (s/union curr-es (edge-set (first curr-vs) (rest curr-vs))) (rest curr-vs)))
+          )]
+    (assoc graph :E new-edges)))
 
-(defn connect-v-with-degree [vs v graph-es degree]
-  (loop [ws (disj vs v)
-         es graph-es]
-    (if (= (count (filter (fn [e] (contains? e v)) es)) degree)
+; change to use graph
+(defn connect-v-with-degree [graph v degree]
+  (loop [ws (disj (vertices graph) v)
+         es (edges graph)]
+    (if (= (count (filter (fn [e] (contains? e v)) es))
+           degree)
       es
       (recur (disj ws (first ws)) (conj es #{v (first ws)})))))
-
-(connect-v-with-degree #{:v1 :v2 :v3} :v1 `() 1)
 
 (defn add-regular-edges [graph degree]
   "Takes an edgeless graph and generates a new graph such that each
@@ -107,14 +103,8 @@
           modified-graph
           (let [curr-v (first vs-to-connect)
                 curr-es (edges modified-graph)]
+            (println "current vertex =" curr-v " current edges =" curr-es)
             (recur
              (disj vs-to-connect curr-v)
              (assoc modified-graph :E (set
-                                       (connect-v-with-degree (vertices modified-graph) curr-v curr-es degree))))))))))
-
-;(def t (map (fn [dest] #{:v1 dest}) [:v3 :v2]))
-
-(def test-graph2
-  (create-simple-graph  [:v1 :v2 :v3 :v4] []))
-
-(def reg-test-graph2 (add-regular-edges test-graph2 2))
+                                       (connect-v-with-degree modified-graph curr-v degree))))))))))
