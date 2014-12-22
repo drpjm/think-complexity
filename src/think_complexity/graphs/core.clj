@@ -83,12 +83,19 @@
 
 ; change to use graph
 (defn connect-v-with-degree [graph v degree]
-  (loop [ws (disj (vertices graph) v)
-         es (edges graph)]
-    (if (= (count (filter (fn [e] (contains? e v)) es))
-           degree)
-      es
-      (recur (disj ws (first ws)) (conj es #{v (first ws)})))))
+  (loop [modified-graph graph
+         vs-left (disj (vertices modified-graph) v)]
+    (if (>= (count (filter (fn [e] (contains? e v)) (edges graph))) degree)
+      modified-graph
+      (let [currv (first vs-left)]
+        (recur (add-edge modified-graph v currv)
+               (disj vs-left currv))))))
+  #_(loop [ws (disj (vertices graph) v)
+          es (edges graph)]
+     (if (= (count (filter (fn [e] (contains? e v)) es))
+            degree)
+       es
+       (recur (disj ws (first ws)) (conj es #{v (first ws)}))))
 
 (defn add-regular-edges [graph degree]
   "Takes an edgeless graph and generates a new graph such that each
@@ -108,3 +115,5 @@
              (disj vs-to-connect curr-v)
              (assoc modified-graph :E (set
                                        (connect-v-with-degree modified-graph curr-v degree))))))))))
+
+
