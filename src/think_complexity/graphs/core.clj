@@ -85,17 +85,16 @@
 (defn connect-v-with-degree [graph v degree]
   (loop [modified-graph graph
          vs-left (disj (vertices modified-graph) v)]
-    (if (>= (count (filter (fn [e] (contains? e v)) (edges graph))) degree)
-      modified-graph
-      (let [currv (first vs-left)]
-        (recur (add-edge modified-graph v currv)
-               (disj vs-left currv))))))
-  #_(loop [ws (disj (vertices graph) v)
-          es (edges graph)]
-     (if (= (count (filter (fn [e] (contains? e v)) es))
-            degree)
-       es
-       (recur (disj ws (first ws)) (conj es #{v (first ws)}))))
+    (let [edges-with-v (filter (fn [e] (contains? e v)) (edges modified-graph))]
+      (if (or
+            (>= (count edges-with-v) degree)
+            (empty? vs-left))
+        modified-graph
+        (let [currv (first vs-left)]
+          (recur (if (>= (degree-of-v modified-graph currv) degree)
+                   modified-graph
+                   (add-edge modified-graph v currv))
+                 (disj vs-left currv)))))))
 
 (defn add-regular-edges [graph degree]
   "Takes an edgeless graph and generates a new graph such that each
@@ -105,15 +104,11 @@
     (if (and (odd? degree) (odd? (count (vertices graph))))
       (println "Error: cannot have an odd number of vertices with odd degree.")
       (loop [vs-to-connect (vertices graph)
-             modified-graph graph]
+             regular-graph graph]
         (if (empty? vs-to-connect)
-          modified-graph
-          (let [curr-v (first vs-to-connect)
-                curr-es (edges modified-graph)]
-            (println "current vertex =" curr-v " current edges =" curr-es)
-            (recur
-             (disj vs-to-connect curr-v)
-             (assoc modified-graph :E (set
-                                       (connect-v-with-degree modified-graph curr-v degree))))))))))
+          regular-graph
+          (recur
+            (disj vs-to-connect (first vs-to-connect))
+            (connect-v-with-degree regular-graph (first vs-to-connect) degree)))))))
 
 

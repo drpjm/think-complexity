@@ -8,7 +8,7 @@
 (def test-graph2
   (create-simple-graph  [:v1 :v2 :v3 :v4] []))
 
-(def reg-test-graph2 (add-regular-edges test-graph2 2))
+;(def reg-test-graph2 (add-regular-edges test-graph2 2))
 
 ;(map edge-as-string (:E test-graph1))
 
@@ -16,4 +16,4 @@
 
 ;(out-edges test-graph1 :v2)
 
-(viz/view-graph reg-test-graph2)
+(viz/view-graph test-graph2)
